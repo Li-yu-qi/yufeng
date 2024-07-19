@@ -3,119 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Learner</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            padding: 0;
-        }
-        .chat-container {
-            width: 400px;
-            margin: 0 auto;
-            border: 1px solid #ccc;
-            padding: 10px;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-        }
-        .chat-messages {
-            height: 300px;
-            overflow-y: scroll;
-            margin-bottom: 10px;
-            padding: 10px;
-            border: 1px solid #eee;
-            border-radius: 5px;
-            background-color: #fff;
-        }
-        .chat-input {
-            width: calc(100% - 80px);
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            margin-right: 5px;
-            font-size: 14px;
-        }
-        .send-btn {
-            padding: 8px 15px;
-            border: none;
-            border-radius: 5px;
-            background-color: #4CAF50;
-            color: white;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        .send-btn:hover {
-            background-color: #45a049;
-        }
-    </style>
+    <title>API Demo</title>
 </head>
 <body>
-    <div class="chat-container">
-        <div class="chat-messages" id="chat-messages">
-            <!-- 聊天消息将动态添加到这里 -->
-        </div>
-        <div>
-            <input type="text" id="user-input" class="chat-input" placeholder="Type your message...">
-            <button onclick="sendMessage()" class="send-btn">Send</button>
-        </div>
-    </div>
+    <h1>API Demo</h1>
+    <button onclick="fetchData()">Get Current Time</button>
+    <div id="response"></div>
 
     <script>
-        function sendMessage() {
-    var userInput = document.getElementById('user-input').value.trim();
-    
-    if (userInput === '') return;
+        function fetchData() {
+    // 替换为实际的 API 地址
+    var apiUrl = 'https://api.chatanywhere.tech/v1';
 
-    // 添加用户输入到聊天界面
-    displayMessage('user', userInput);
+    // 发送 GET 请求到 API
+    fetch(apiUrl)
+        .then(response => {
+            // 检查是否收到成功响应
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json(); // 解析 JSON 数据
+        })
+        .then(data => {
+            // 处理 API 返回的数据
+            var currentTime = data.time;
 
-    // 清空输入框
-    document.getElementById('user-input').value = '';
-
-    // 向 ChatGPT API 发送请求
-    fetchChatGPTResponse(userInput);
+            // 将返回的时间显示在页面上
+            var responseElement = document.getElementById('response');
+            responseElement.innerHTML = '<p>Current Time: ' + currentTime + '</p>';
+        })
+        .catch(error => {
+            // 处理错误情况
+            console.error('There has been a problem with your fetch operation:', error);
+            var responseElement = document.getElementById('response');
+            responseElement.innerHTML = '<p>Failed to fetch data from API.</p>';
+        });
 }
 
-function fetchChatGPTResponse(userInput) {
-    var apiUrl = 'https://api.chatanywhere.tech/v1/chat/completions';
-
-    var data = {
-        prompt: userInput,
-        max_tokens: 150
-    };
-
-    fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'sk-8LOPaOSfDfYTXKOSvkVSSI5R3xGHcY1f8k6OkmhnWi1NN1OE' // 替换为您的实际API密钥
-        },
-        body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then(data => {
-        var chatGPTResponse = data.choices[0].text.trim();
-
-        // 添加ChatGPT回复到聊天界面
-        displayMessage('chatbot', chatGPTResponse);
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        displayMessage('chatbot', 'Sorry, an error occurred while processing your request.');
-    });
-}
-
-function displayMessage(sender, message) {
-    var chatMessages = document.getElementById('chat-messages');
-    var messageElement = document.createElement('div');
-    messageElement.classList.add('message', sender === 'user' ? 'user-message' : 'chatbot-message');
-    messageElement.innerText = message;
-    chatMessages.appendChild(messageElement);
-
-    // 自动滚动到最新消息
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-}
-// JavaScript 代码将在这里编写
+        // JavaScript 代码将在这里编写
     </script>
 </body>
 </html>
