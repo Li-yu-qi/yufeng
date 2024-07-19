@@ -1,129 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>kimi</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            padding: 0;
-        }
-        .chat-container {
-            width: 400px;
-            margin: 0 auto;
-            border: 1px solid #ccc;
-            padding: 10px;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-        }
-        .chat-messages {
-            height: 300px;
-            overflow-y: scroll;
-            margin-bottom: 10px;
-            padding: 10px;
-            border: 1px solid #eee;
-            border-radius: 5px;
-            background-color: #fff;
-        }
-        .chat-input {
-            width: calc(100% - 80px);
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            margin-right: 5px;
-            font-size: 14px;
-        }
-        .send-btn {
-            padding: 8px 15px;
-            border: none;
-            border-radius: 5px;
-            background-color: #4CAF50;
-            color: white;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        .send-btn:hover {
-            background-color: #45a049;
-        }
-    </style>
+    <title>My Personal Website</title>
 </head>
 <body>
-    <h1>ChatGPT Demo</h1>
-    <div class="chat-container">
-        <div class="chat-messages" id="chat-messages">
-            <!-- 聊天消息将动态添加到这里 -->
-        </div>
-        <div>
-            <input type="text" id="user-input" class="chat-input" placeholder="Type your message...">
-            <button onclick="sendMessage()" class="send-btn">Send</button>
-        </div>
+    <h1>Welcome to My Personal Website!</h1>
+
+    <div id="chat-container">
+        <div id="chat-messages"></div>
+        <input type="text" id="chat-input">
+        <button onclick="sendMessage()">Send</button>
     </div>
 
     <script>
-        // 定义一个全局变量用于存储聊天历史记录
-var chatHistory = [];
+        // Replace 'YOUR_KIMI_API_KEY' with your actual API key
+        const apiKey = 'sk-ml6Lcf8z3CPfj5ayFfC905tp9kdUfHo32tNCBCpZD4x3dMHm';
+        const chatUrl = `https://api.kimi.com/chat?apiKey=${apiKey}`;
 
-function sendMessage() {
-    var userInput = document.getElementById('user-input').value.trim();
-    
-    if (userInput === '') return;
+        function sendMessage() {
+            const message = document.getElementById('chat-input').value;
+            const chatMessages = document.getElementById('chat-messages');
+            const chatInput = document.getElementById('chat-input');
 
-    // 添加用户输入到聊天界面
-    displayMessage('user', userInput);
+            chatMessages.innerHTML += `<p>You: ${message}</p>`;
 
-    // 清空输入框
-    document.getElementById('user-input').value = '';
-
-    // 向 ChatGPT API 发送请求
-    fetchChatGPTResponse(userInput);
-}
-
-function fetchChatGPTResponse(userInput) {
-    var apiUrl = 'https://api.moonshot.cn/v1';
-
-    var data = {
-        prompt: userInput,
-        max_tokens: 150
-    };
-
-    fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'sk-ml6Lcf8z3CPfj5ayFfC905tp9kdUfHo32tNCBCpZD4x3dMHm' // 替换为您的实际API密钥
-        },
-        body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then(data => {
-        var chatGPTResponse = data.choices[0].text.trim();
-
-        // 添加ChatGPT回复到聊天界面
-        displayMessage('chatbot', chatGPTResponse);
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        displayMessage('chatbot', 'Sorry, an error occurred while processing your request.');
-    });
-}
-
-function displayMessage(sender, message) {
-    var chatMessages = document.getElementById('chat-messages');
-    var messageElement = document.createElement('div');
-    messageElement.classList.add('message', sender === 'user' ? 'user-message' : 'chatbot-message');
-    messageElement.innerText = message;
-    chatMessages.appendChild(messageElement);
-
-    // 添加到聊天历史记录
-    chatHistory.push({ sender: sender, message: message });
-
-    // 自动滚动到最新消息
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-}
-
-        // JavaScript 代码将在这里编写
+            fetch(chatUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                chatMessages.innerHTML += `<p>Kimi: ${data.response}</p>`;
+                chatInput.value = '';
+            })
+            .catch(error => console.error('Error:', error));
+        }
     </script>
 </body>
 </html>
