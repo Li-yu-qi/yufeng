@@ -62,7 +62,7 @@
         <dl id="thelist">
         </dl>
       </div>
-    <textarea id="input-text" placeholder="q输入问题..."></textarea>
+    <textarea id="input-text" placeholder="输入问题..."></textarea>
     <button id="submit-button">发送</button>
     </div>
 
@@ -95,7 +95,7 @@
 
       async function chatGPT(message) {
         const apikey = 'sk-8LOPaOSfDfYTXKOSvkVSSI5R3xGHcY1f8k6OkmhnWi1NN1OE';
-        const endpoint = 'https://api.chatanywhere.tech';
+        const endpoint = 'https://api.chatanywhere.com.cn/v1/chat/completions';
 
         const data = {
           message: [{role: 'system', content: 'You'},{role: 'user', content: message}],
