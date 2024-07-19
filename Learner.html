@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChatGPT Demo</title>
+    <title>kimi</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -81,7 +81,7 @@ function sendMessage() {
 }
 
 function fetchChatGPTResponse(userInput) {
-    var apiUrl = 'https://api.chatanywhere.com.cn/v1/chat/completions';
+    var apiUrl = 'https://api.moonshot.cn/v1';
 
     var data = {
         prompt: userInput,
@@ -92,7 +92,7 @@ function fetchChatGPTResponse(userInput) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'sk-8LOPaOSfDfYTXKOSvkVSSI5R3xGHcY1f8k6OkmhnWi1NN1OE' // 替换为您的实际API密钥
+            'Authorization': 'sk-ml6Lcf8z3CPfj5ayFfC905tp9kdUfHo32tNCBCpZD4x3dMHm' // 替换为您的实际API密钥
         },
         body: JSON.stringify(data)
     })
