@@ -1,46 +1,140 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-    <title>KIMI Chat</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script>
-        function sendToAPI(message) {
-            var settings = {
-                "url": "https://api.moonshot.cn/v1/chat/completions",  // 你的API端点
-                "method": "POST",
-                "headers": {
-                    "Content-Type": "application/json",
-                    "Authorization": "sk-ml6Lcf8z3CPfj5ayFfC905tp9kdUfHo32tNCBCpZD4x3dMHm"  // 使用你的API密钥
-                },
-                "data": JSON.stringify({
-                    "input": message
-                }),
-            };
-
-            $.ajax(settings).done(function (response) {
-                addChatLine('KIMI', response.message);  // 假定API返回一个名为'message'的字段
-            });
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>宇峰Learner</title>
+    <style>
+        html,body {
+            height: 100%;
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
         }
-
-        function addChatLine(name, message) {
-            var chat = document.getElementById('chat');
-            chat.innerHTML += '<strong>' + name + '</strong>: ' + message + '<br>';
-            chat.scrollTop = chat.scrollHeight;
+        textarea{
+            width: 95%;
+            height: 40px;
+            resize: none;
+            padding: 5px;
+            margin-bottom: 50px;
+            left: 10px;
+            bottom: 0px;
+            position: adsolute;
+            border-radius: 10px;
+            border-color: #87B2F6;
+            border-width: 3px;
         }
-
-        window.onload = function() {
-            document.getElementById('sendButton').onclick = function() {
-                var message = document.getElementById('inputBox').value;
-                document.getElementById('inputBox').value = '';
-                addChatLine('You', message);
-                sendToAPI(message);
-            };
-        };
-    </script>
+        #output-text{
+            height: 70%;
+            margin-top: 20px;
+            text-align: left;
+            overflow-y: auto;
+        }
+        dt{
+            font-weight: bold;
+            padding: 10px;
+        }
+        .container {
+            width:80%;
+            height: 95%;
+            margin: 0 auto;
+            text-align: center; 
+            background-color: #ffffff;
+            position: relative;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            bottom: 0px;
+        }
+        img{
+            border-radius: 50%;
+        }
+    </style>
 </head>
 <body>
-<h1>KIMI Chat</h1>
-<div id="chat" style="height: 300px; overflow-y: scroll; border: 1px solid black; padding: 10px"></div>
-<input id="inputBox" type="text"><button id="sendButton">Send</button>
+    <div class="container">
+      <h1>Learner</h1>
+      <div id="output-text">
+        <dl id="thelist">
+        </dl>
+      </div>
+    <textarea id="input-text" placeholder="q输入问题..."></textarea>
+    <button id="submit-button">发送</button>
+    </div>
+
+    
+    <script>
+      function addelement(term, desc) {
+        var completelist= document.getElementById("thelist");
+
+        if(term =="You") {
+          completelist.innerHTML += "<dt>" + "<img src='you.png' width='40' height='40'>" + "</dt>";
+          completelist.innerHTML += "<dd>" + desc +"</dd>";
+        }
+        else{
+          completelist.innerHTML += "<dt>" + "<img src='chatgpt.png' width='40' height='40'>" + "</dt>";
+          completelist.innerHTML += "<dd>" + desc +"</dd>";
+        }
+      }
+
+     document.getElementById("submit-button").addEventListener("click", async () => {
+        const inputText = document.getElementById("input-text");
+        const outputText = document.getElementById("output-text");
+
+        if(inputText) {
+          addelement("You", inputText.value);
+          const response = await chatGPT(inputText.value);
+          inputText.value = "";
+          addelement("ChatGPT", response);
+        }
+      });
+
+      async function chatGPT(message) {
+        const apikey = 'sk-8LOPaOSfDfYTXKOSvkVSSI5R3xGHcY1f8k6OkmhnWi1NN1OE',
+        const endpoint = 'https://api.chatanywhere.com.cn/v1/chat/completions';
+
+        const data = {
+          message: [{role: 'system', content: 'You'},{role: 'user', content: message}],
+          model: 'gpt-3.5-turbo',
+        };
+        const requestOptions = {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'sk-8LOPaOSfDfYTXKOSvkVSSI5R3xGHcY1f8k6OkmhnWi1NN1OE',
+          },
+          body: JSON.stringify({
+            model: "gpt-3.5-turbo",
+            message: [
+              {
+                "role": "system",
+                "content": "You are a helpful assistant that doea OCR and image recognition."
+              },
+              {
+                "role": "user",
+                "content": message
+              }
+            ]
+          })
+        };
+
+        try {
+          const response = await fetch(endpoint, requestOptions);
+          const result = await response.json();
+          console.log(result.choices[0].message.content);
+
+          return result.choices[0].message.content;
+        }
+        catch(error) {
+          console.log('log:', error);
+          console.error('Error:', error);
+        }
+      }
+
+    </script>
 </body>
 </html>
