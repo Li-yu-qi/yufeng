@@ -1,43 +1,31 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>W</title>
+    <title>My Kimi Website</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            var settings = {
+                "url": "https://api.moonshot.cn/v1/chat/completions",  // 你的API端点
+                "method": "POST",
+                "headers": {
+                    "Content-Type": "application/json",
+                    "Authorization": "sk-ml6Lcf8z3CPfj5ayFfC905tp9kdUfHo32tNCBCpZD4x3dMHm"  // 使用你的API密钥
+                },
+                "data": JSON.stringify({
+                    "input": "Hello, world!"
+                }),
+            };
+
+            $.ajax(settings).done(function (response) {
+                console.log(response);
+                document.getElementById("result").innerHTML = JSON.stringify(response);
+            });
+        });
+    </script>
 </head>
 <body>
-    <h1>Welcome to My Personal Website!</h1>
-
-    <div id="chat-container">
-        <div id="chat-messages"></div>
-        <input type="text" id="chat-input">
-        <button onclick="sendMessage()">Send</button>
-    </div>
-
-    <script>
-        // Replace 'YOUR_KIMI_API_KEY' with your actual API key
-        const apiKey = 'sk-ml6Lcf8z3CPfj5ayFfC905tp9kdUfHo32tNCBCpZD4x3dMHm';
-        const chatUrl = `https://api.moonshot.cn`;
-
-        function sendMessage() {
-            const message = document.getElementById('chat-input').value;
-            const chatMessages = document.getElementById('chat-messages');
-            const chatInput = document.getElementById('chat-input');
-
-            chatMessages.innerHTML += `<p>You: ${message}</p>`;
-
-            fetch(chatUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ message })
-            })
-            .then(response => response.json())
-            .then(data => {
-                chatMessages.innerHTML += `<p>Kimi: ${data.response}</p>`;
-                chatInput.value = '';
-            })
-            .catch(error => console.error('Error:', error));
-        }
-    </script>
+<h1>My Kimi Website</h1>
+<p id="result">Result will go here</p>
 </body>
 </html>
