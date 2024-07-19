@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My Kimi Website</title>
+    <title>KIMI Chat</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
-        $(document).ready(function(){
+        function sendToAPI(message) {
             var settings = {
                 "url": "https://api.moonshot.cn/v1/chat/completions",  // 你的API端点
                 "method": "POST",
@@ -13,19 +13,34 @@
                     "Authorization": "sk-ml6Lcf8z3CPfj5ayFfC905tp9kdUfHo32tNCBCpZD4x3dMHm"  // 使用你的API密钥
                 },
                 "data": JSON.stringify({
-                    "input": "Hello, world!"
+                    "input": message
                 }),
             };
 
             $.ajax(settings).done(function (response) {
-                console.log(response);
-                document.getElementById("result").innerHTML = JSON.stringify(response);
+                addChatLine('KIMI', response.message);  // 假定API返回一个名为'message'的字段
             });
-        });
+        }
+
+        function addChatLine(name, message) {
+            var chat = document.getElementById('chat');
+            chat.innerHTML += '<strong>' + name + '</strong>: ' + message + '<br>';
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        window.onload = function() {
+            document.getElementById('sendButton').onclick = function() {
+                var message = document.getElementById('inputBox').value;
+                document.getElementById('inputBox').value = '';
+                addChatLine('You', message);
+                sendToAPI(message);
+            };
+        };
     </script>
 </head>
 <body>
-<h1>My Kimi Website</h1>
-<p id="result">Result will go here</p>
+<h1>KIMI Chat</h1>
+<div id="chat" style="height: 300px; overflow-y: scroll; border: 1px solid black; padding: 10px"></div>
+<input id="inputBox" type="text"><button id="sendButton">Send</button>
 </body>
 </html>
