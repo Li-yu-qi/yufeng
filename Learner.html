@@ -1,100 +1,89 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>宇峰Learner</title>
+    <title>Chat with ChatGPT</title>
     <style>
-        html,body {
-            height: 100%;
+        body {
             font-family: Arial, sans-serif;
-            background-color: #f2f2f2;
+            margin: 20px;
+            padding: 0;
         }
-        textarea{
-            width: 95%;
-            height: 40px;
-            resize: none;
-            padding: 5px;
-            margin-bottom: 50px;
-            left: 10px;
-            bottom: 0px;
-            position: adsolute;
-            border-radius: 10px;
-            border-color: #87B2F6;
-            border-width: 3px;
-        }
-        #output-text{
-            height: 70%;
-            margin-top: 20px;
-            text-align: left;
-            overflow-y: auto;
-        }
-        dt{
-            font-weight: bold;
-            padding: 10px;
-        }
-        .container {
-            width:80%;
-            height: 95%;
+        .chat-container {
+            width: 400px;
             margin: 0 auto;
-            text-align: center; 
-            background-color: #ffffff;
-            position: relative;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
         }
-        button {
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
+        .chat-messages {
+            height: 300px;
+            overflow-y: scroll;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+        .chat-input {
+            width: calc(100% - 80px);
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 5px;
+            font-size: 14px;
+        }
+        .send-btn {
+            padding: 8px 15px;
             border: none;
             border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
             cursor: pointer;
-            bottom: 0px;
+            font-size: 14px;
         }
-        img{
-            border-radius: 50%;
+        .send-btn:hover {
+            background-color: #45a049;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-      <h1>Learner</h1>
-      <div id="output-text">
-        <dl id="thelist">
-        </dl>
-      </div>
-    <textarea id="input-text" placeholder="q输入问题..."></textarea>
-    <button id="submit-button">发送</button>
+    <div class="chat-container">
+        <div class="chat-messages" id="chat-messages">
+            <!-- 聊天消息将动态添加到这里 -->
+        </div>
+        <div>
+            <input type="text" id="user-input" class="chat-input" placeholder="Type your message...">
+            <button onclick="sendMessage()" class="send-btn">Send</button>
+        </div>
     </div>
 
-    
     <script>
-      function addelement(term, desc) {
-        var completelist= document.getElementById("thelist");
+        function sendMessage() {
+    var userInput = document.getElementById('user-input').value.trim();
+    
+    if (userInput === '') return;
 
-        if(term =="You") {
-          completelist.innerHTML += "<dt>" + "<img src='you.png' width='40' height='40'>" + "</dt>";
-          completelist.innerHTML += "<dd>" + desc +"</dd>";
-        }
-        else{
-          completelist.innerHTML += "<dt>" + "<img src='chatgpt.png' width='40' height='40'>" + "</dt>";
-          completelist.innerHTML += "<dd>" + desc +"</dd>";
-        }
-      }
+    // 添加用户输入到聊天界面
+    displayMessage('user', userInput);
 
-     function sendRequest() {
-    // 获取用户输入的内容
-    var userInput = document.getElementById('user-input').value;
+    // 清空输入框
+    document.getElementById('user-input').value = '';
 
-    // 构建请求的URL
+    // 向 ChatGPT API 发送请求
+    fetchChatGPTResponse(userInput);
+}
+
+function fetchChatGPTResponse(userInput) {
     var apiUrl = 'https://api.chatanywhere.tech/v1/chat/completions';
 
-    // 构建请求的数据对象
     var data = {
         prompt: userInput,
         max_tokens: 150
     };
 
-    // 发送POST请求到ChatGPT API
     fetch(apiUrl, {
         method: 'POST',
         headers: {
@@ -105,15 +94,28 @@
     })
     .then(response => response.json())
     .then(data => {
-        // 处理API响应并显示在页面上
-        var responseElement = document.getElementById('response');
-        responseElement.innerHTML = '<p><strong>Response:</strong> ' + data.choices[0].text.trim() + '</p>';
+        var chatGPTResponse = data.choices[0].text.trim();
+
+        // 添加ChatGPT回复到聊天界面
+        displayMessage('chatbot', chatGPTResponse);
     })
     .catch(error => {
         console.error('Error:', error);
+        displayMessage('chatbot', 'Sorry, an error occurred while processing your request.');
     });
 }
 
+function displayMessage(sender, message) {
+    var chatMessages = document.getElementById('chat-messages');
+    var messageElement = document.createElement('div');
+    messageElement.classList.add('message', sender === 'user' ? 'user-message' : 'chatbot-message');
+    messageElement.innerText = message;
+    chatMessages.appendChild(messageElement);
+
+    // 自动滚动到最新消息
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+// JavaScript 代码将在这里编写
     </script>
 </body>
 </html>
