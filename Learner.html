@@ -62,7 +62,7 @@
         <dl id="thelist">
         </dl>
       </div>
-    <textarea id="input-text" placeholder="输入您的问题..."></textarea>
+    <textarea id="input-text" placeholder="输入问题..."></textarea>
     <button id="submit-button">发送</button>
     </div>
 
@@ -94,8 +94,8 @@
       });
 
       async function chatGPT(message) {
-        const apikey = 'sk-8LOPaOSfDfYTXKOSvkVSSI5R3xGHcY1f8k6OkmhnWi1NN1OE';
-        const endpoint = 'https://api.chatanywhere.tech/v1/chat/completions';
+        const apikey = 'sk-ml6Lcf8z3CPfj5ayFfC905tp9kdUfHo32tNCBCpZD4x3dMHm';
+        const endpoint = 'https://api.moonshot.cn/v1/chat/completions';
 
         const data = {
           message: [{role: 'system', content: 'You'},{role: 'user', content: message}],
@@ -105,7 +105,7 @@
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'sk-8LOPaOSfDfYTXKOSvkVSSI5R3xGHcY1f8k6OkmhnWi1NN1OE',
+            'Authorization': 'sk-ml6Lcf8z3CPfj5ayFfC905tp9kdUfHo32tNCBCpZD4x3dMHm',
           },
           body: JSON.stringify({
             model: "gpt-3.5-turbo",
