@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>宇峰Learner</title>
+    <title>Learner</title>
     <style>
         html,body {
             height: 100%;
@@ -62,7 +62,7 @@
         <dl id="thelist">
         </dl>
       </div>
-    <textarea id="input-text" placeholder="q输入问题..."></textarea>
+    <textarea id="input-text" placeholder="输入您的问题..."></textarea>
     <button id="submit-button">发送</button>
     </div>
 
@@ -81,7 +81,7 @@
         }
       }
 
-     document.getElementById("submit-button").addEventListener("click", async () => {
+      document.getElementById("submit-button").addEventListener("click", async () => {
         const inputText = document.getElementById("input-text");
         const outputText = document.getElementById("output-text");
 
@@ -94,8 +94,8 @@
       });
 
       async function chatGPT(message) {
-        const apikey = 'sk-8LOPaOSfDfYTXKOSvkVSSI5R3xGHcY1f8k6OkmhnWi1NN1OE',
-        const endpoint = 'https://api.chatanywhere.com.cn/v1/chat/completions';
+        const apikey = 'sk-8LOPaOSfDfYTXKOSvkVSSI5R3xGHcY1f8k6OkmhnWi1NN1OE';
+        const endpoint = 'https://api.chatanywhere.tech/v1/chat/completions';
 
         const data = {
           message: [{role: 'system', content: 'You'},{role: 'user', content: message}],
@@ -134,7 +134,6 @@
           console.error('Error:', error);
         }
       }
-
     </script>
 </body>
 </html>
