@@ -1,46 +1,140 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API</title>
+    <title>宇峰Learner</title>
+    <style>
+        html,body {
+            height: 100%;
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+        }
+        textarea{
+            width: 95%;
+            height: 40px;
+            resize: none;
+            padding: 5px;
+            margin-bottom: 50px;
+            left: 10px;
+            bottom: 0px;
+            position: adsolute;
+            border-radius: 10px;
+            border-color: #87B2F6;
+            border-width: 3px;
+        }
+        #output-text{
+            height: 70%;
+            margin-top: 20px;
+            text-align: left;
+            overflow-y: auto;
+        }
+        dt{
+            font-weight: bold;
+            padding: 10px;
+        }
+        .container {
+            width:80%;
+            height: 95%;
+            margin: 0 auto;
+            text-align: center; 
+            background-color: #ffffff;
+            position: relative;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            bottom: 0px;
+        }
+        img{
+            border-radius: 50%;
+        }
+    </style>
 </head>
 <body>
-    <h1>API Demo</h1>
-    <button onclick="fetchData()">Get Current Time</button>
-    <div id="response"></div>
+    <div class="container">
+      <h1>Learner</h1>
+      <div id="output-text">
+        <dl id="thelist">
+        </dl>
+      </div>
+    <textarea id="input-text" placeholder="q输入问题..."></textarea>
+    <button id="submit-button">发送</button>
+    </div>
 
+    
     <script>
-        function fetchData() {
-    // 替换为实际的 API 地址
-    var apiUrl = 'https://api.chatanywhere.tech/v1/chat/completions';
+      function addelement(term, desc) {
+        var completelist= document.getElementById("thelist");
 
-    // 发送 GET 请求到 API
-    fetch(apiUrl)
-        .then(response => {
-            // 检查是否收到成功响应
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json(); // 解析 JSON 数据
-        })
-        .then(data => {
-            // 处理 API 返回的数据
-            var currentTime = data.time;
+        if(term =="You") {
+          completelist.innerHTML += "<dt>" + "<img src='you.png' width='40' height='40'>" + "</dt>";
+          completelist.innerHTML += "<dd>" + desc +"</dd>";
+        }
+        else{
+          completelist.innerHTML += "<dt>" + "<img src='chatgpt.png' width='40' height='40'>" + "</dt>";
+          completelist.innerHTML += "<dd>" + desc +"</dd>";
+        }
+      }
 
-            // 将返回的时间显示在页面上
-            var responseElement = document.getElementById('response');
-            responseElement.innerHTML = '<p>Current Time: ' + currentTime + '</p>';
-        })
-        .catch(error => {
-            // 处理错误情况
-            console.error('There has been a problem with your fetch operation:', error);
-            var responseElement = document.getElementById('response');
-            responseElement.innerHTML = '<p>Failed to fetch data from API.</p>';
-        });
-}
+     document.getElementById("submit-button").addEventListener("click", async () => {
+        const inputText = document.getElementById("input-text");
+        const outputText = document.getElementById("output-text");
 
-        // JavaScript 代码将在这里编写
+        if(inputText) {
+          addelement("You", inputText.value);
+          const response = await chatGPT(inputText.value);
+          inputText.value = "";
+          addelement("ChatGPT", response);
+        }
+      });
+
+      async function chatGPT(message) {
+        const apikey = "sk-8LOPaOSfDfYTXKOSvkVSSI5R3xGHcY1f8k6OkmhnWi1NN1OE";
+        const endpoint = "https://api.chatanywhere.tech";
+
+        const data = {
+          message: [{role: 'system', content: 'You'},{role: 'user', content: message}],
+          model: 'gpt-3.5-turbo',
+        };
+        const requestOptions = {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $(apikey)',
+          },
+          body: JSON.stringify({
+            model: "gpt-3.5-turbo",
+            message: [
+              {
+                "role": "system",
+                "content": "You are a helpful assistant that doea OCR and image recognition."
+              },
+              {
+                "role": "user",
+                "content": message
+              }
+            ]
+          })
+        };
+
+        try {
+          const response = await fetch(endpoint, requestOptions);
+          const result = await response.json();
+          console.log(result.choices[0].message.content);
+
+          return result.choices[0].message.content;
+        }
+        catch(error) {
+          console.log('log:', error);
+          console.error('Error:', error);
+        }
+      }
+
     </script>
 </body>
 </html>
