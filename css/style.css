@@ -10,7 +10,7 @@ body{font:12px "微软雅黑"; background:#eaeaea;}
 .topcenter{width:1000px; margin:0 auto;}
 
 .topleft{float:left; width:240px;}
-.topleft h1{margin-top:30px;}
+.topleft h1{margin-top:30px;color: white}
 .topleft ul{float:left; margin:30px 0 0 -12px;}
 .topleft li{float:left; border-right:1px solid #3a503c; padding:0 12px;}
 .topleft .noright{border:0;}
